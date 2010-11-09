@@ -1,0 +1,6 @@
+# dist file for InspectionBar
+dist /extensions/Qt/Qt.dist http://openengine.dk/code/extensions/Qt/Qt.dist
+dist /extensions/Inspection/Inspection.dist http://openengine.dk/code/extensions/Inspection/Inspection.dist
+
+darcs      /extensions/InspectionWidget            http://openengine.dk/code/extensions/InspectionWidget
+darcs-dev  /extensions/InspectionWidget            fh.daimi.au.dk:/users/cgd/code/extensions/InspectionWidget
