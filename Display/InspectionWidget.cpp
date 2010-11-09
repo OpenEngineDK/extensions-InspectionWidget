@@ -24,6 +24,9 @@ InspectionWidget::InspectionWidget(string title, ValueList vl) {
             if (val->properties.count(MIN)) {
                 w->setMinimum(val->properties[MIN]);
             }
+            if (val->properties.count(MAX)) {
+                w->setMaximum(val->properties[MAX]);
+            }
 
             w->setOrientation(Qt::Horizontal);
 
