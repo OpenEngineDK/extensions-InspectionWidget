@@ -44,8 +44,8 @@ InspectionWidget::InspectionWidget(string title, ValueList vl) {
 
             QString str = QString::fromStdString(val->name);
 
-            box->addWidget(l);
-            box->addWidget(w);
+            box->addWidget(l,Qt::AlignLeft);
+            box->addWidget(w,Qt::AlignRight);
             
             obj->Refresh();
 
