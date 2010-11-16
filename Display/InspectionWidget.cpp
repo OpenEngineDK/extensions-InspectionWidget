@@ -17,7 +17,23 @@ InspectionWidget::InspectionWidget(string title, ValueList vl) {
     for (ValueList::iterator itr = vl.begin();
          itr != vl.end();
          itr++) {
-        if (RWValue<float> *val = dynamic_cast<RWValue<float> *>(*itr)) {
+        if (RValue<float> *val = dynamic_cast<RValue<float> *>(*itr)) {
+            QLabel *l = new QLabel();
+
+            RValueObjectFloat* obj = new RValueObjectFloat(val);
+
+            QObject::connect(obj, SIGNAL(valueChanged(double)),
+                             l, SLOT(setNum(double)));
+
+            objects.push_back(obj);
+
+            QString str = QString::fromStdString(val->name);
+            
+            obj->Refresh();
+
+            layout->addRow(str, l);
+            
+        } else if (RWValue<float> *val = dynamic_cast<RWValue<float> *>(*itr)) {
             QAbstractSlider *w = new QSlider();
             QLabel *l = new QLabel();
             float scale = 10.0;
@@ -94,8 +110,8 @@ InspectionWidget::InspectionWidget(string title, ValueList vl) {
 }
 
     void InspectionWidget::Handle(Core::ProcessEventArg arg) {
-        if (timer.GetElapsedTime().sec > 1) {
-            for (list<RWValueObject*>::iterator itr = objects.begin();
+        if (timer.GetElapsedTime().AsInt32() > 400000) {
+            for (list<ValueObject*>::iterator itr = objects.begin();
                  itr != objects.end();
                  itr++) {
                 (*itr)->Refresh();
