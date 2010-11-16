@@ -26,7 +26,39 @@ using namespace Utils::Inspection;
 using namespace Core;
 using namespace Utils;
 
-class RWValueObjectUInt : public QObject {
+class RWValueObject : public QObject {
+    Q_OBJECT
+    public:
+    virtual void Refresh() = 0;
+};
+
+class RWValueObjectFloat : public RWValueObject {
+    Q_OBJECT
+    RWValue<float>* val;
+public:
+    float scale;
+    RWValueObjectFloat(RWValue<float> *val) : val(val) {  }
+    int value() const { 
+        return val->Get() * scale;
+    }
+
+    void Refresh() {
+        emit valueChanged( val->Get() );
+        emit valueChangedInt( val->Get() * scale);
+    }
+
+ public slots:
+    void setValue(int value) { 
+        val->Set(value/scale);
+        Refresh();
+    }
+
+signals:
+    void valueChanged(double newValue);
+    void valueChangedInt(int newValue);
+};
+
+class RWValueObjectUInt : public RWValueObject {
     Q_OBJECT
     RWValue<unsigned int>* val;
  public:
@@ -47,9 +79,6 @@ class RWValueObjectUInt : public QObject {
 
 signals:
     void valueChanged(int newValue);
-
-private:
-    int m_value;
  };
 
 
@@ -62,7 +91,7 @@ class InspectionWidget : public QWidget
                        , public IListener<Core::ProcessEventArg> {
 private:
     Timer timer;
-    list<RWValueObjectUInt*> objects;
+    list<RWValueObject*> objects;
 public:
     InspectionWidget(std::string title, Utils::Inspection::ValueList vl);
     void Handle(Core::ProcessEventArg arg);
