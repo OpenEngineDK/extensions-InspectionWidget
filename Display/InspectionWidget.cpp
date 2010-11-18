@@ -17,7 +17,19 @@ InspectionWidget::InspectionWidget(string title, ValueList vl) {
     for (ValueList::iterator itr = vl.begin();
          itr != vl.end();
          itr++) {
-        if (RValue<float> *val = dynamic_cast<RValue<float> *>(*itr)) {
+        if (ActionValue* val = dynamic_cast<ActionValue*>(*itr)) {
+            QString name = QString::fromStdString(val->name);
+            QPushButton* btn = new QPushButton(name);
+            
+            ActionValueObject* obj = new ActionValueObject(val);
+            QObject::connect(btn, SIGNAL(clicked(bool)),
+                             obj, SLOT(call(bool)));
+
+            objects.push_back(obj);
+
+            layout->addRow(name, btn);
+            
+        } else if (RValue<float>* val = dynamic_cast<RValue<float> *>(*itr)) {
             QLabel *l = new QLabel();
 
             RValueObjectFloat* obj = new RValueObjectFloat(val);

@@ -32,11 +32,23 @@ class ValueObject : public QObject {
     virtual void Refresh() = 0;
 };
 
+class ActionValueObject : public ValueObject {
+    Q_OBJECT
+    ActionValue* val;
+public:
+    ActionValueObject(ActionValue* val) : val(val) {}
+    void Refresh() {}
+public slots:
+    void call(bool a) {
+        val->Call();
+    }
+};
+
 class RValueObjectFloat : public ValueObject {
     Q_OBJECT
     RValue<float>* val;
 public:
-    RValueObjectFloat(RValue<float> *val) : val(val) {}
+    RValueObjectFloat(RValue<float>* val) : val(val) {}
     
     void Refresh() {
         emit valueChanged(val->Get() );
