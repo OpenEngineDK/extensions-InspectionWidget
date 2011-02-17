@@ -61,6 +61,7 @@ signals:
 class RWValueObjectFloat : public ValueObject {
     Q_OBJECT
     RWValue<float>* val;
+    float lastVal;
 public:
     float scale;
     RWValueObjectFloat(RWValue<float> *val) : val(val) {  }
@@ -69,8 +70,11 @@ public:
     }
 
     void Refresh() {
+        if (val->Get() == lastVal) return;
         emit valueChanged( val->Get() );
         emit valueChangedInt( val->Get() * scale);
+        emit valueChangedString(QString::number(val->Get()));
+        lastVal = val->Get();
     }
 
  public slots:
@@ -78,10 +82,14 @@ public:
         val->Set(value/scale);
         Refresh();
     }
+    void setStringValue(const QString& str) {
+        val->Set(str.toFloat());
+    }
 
 signals:
     void valueChanged(double newValue);
     void valueChangedInt(int newValue);
+    void valueChangedString(const QString&);
 };
 
 class RWValueObjectUInt : public ValueObject {

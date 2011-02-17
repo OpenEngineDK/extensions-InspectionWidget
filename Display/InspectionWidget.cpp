@@ -47,7 +47,7 @@ InspectionWidget::InspectionWidget(string title, ValueList vl) {
             
         } else if (RWValue<float> *val = dynamic_cast<RWValue<float> *>(*itr)) {
             QAbstractSlider *w = new QSlider();
-            QLabel *l = new QLabel();
+            QLineEdit *le = new QLineEdit();
             float scale = 10.0;
             if (val->properties.count(STEP)) {
                 scale = 1/(val->properties[STEP]);
@@ -68,14 +68,17 @@ InspectionWidget::InspectionWidget(string title, ValueList vl) {
             QObject::connect(w, SIGNAL(valueChanged(int)),
                              obj, SLOT(setValue(int)));
 
-            QObject::connect(obj, SIGNAL(valueChanged(double)),
-                             l, SLOT(setNum(double)));
+            QObject::connect(obj, SIGNAL(valueChangedString(const QString&)),
+                             le, SLOT(setText(const QString&)));
+
+            QObject::connect(le, SIGNAL(textEdited(const QString&)),
+                             obj, SLOT(setStringValue(const QString&)));
 
             objects.push_back(obj);
 
             QString str = QString::fromStdString(val->name);
 
-            box->addWidget(l,Qt::AlignLeft);
+            box->addWidget(le, Qt::AlignLeft);
             box->addWidget(w,Qt::AlignRight);
             
             obj->Refresh();
